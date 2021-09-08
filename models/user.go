@@ -2,9 +2,10 @@ package models
 
 // User 登陆api请求param结构
 type User struct {
-	UserID   uint64 `json:"user_id" db:"user_id"`
+	UserID   int64  `json:"user_id" db:"user_id"`
 	UserName string `json:"username" db:"username"`
 	Password string `json:"password" db:"password"`
+	Position string `json:"position" db:"position"`
 }
 
 // RegisterForm 注册api请求param结构
@@ -13,5 +14,4 @@ type RegisterForm struct {
 	Password        string `json:"password"`
 	ConfirmPassword string `json:"repassword"`
 }
-
 

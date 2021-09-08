@@ -13,6 +13,9 @@ const (
 	CodeInvalidToken      MyCode = 1006
 	CodeInvalidAuthFormat MyCode = 1007
 	CodeNotLogin          MyCode = 1008
+	CodeRequestFileError  MyCode = 1009
+	CodeRedisSaveFiled    MyCode = 1010
+	CodeFileSeekFailed    MyCode = 1011
 )
 
 var msgFlags = map[MyCode]string{
@@ -26,6 +29,9 @@ var msgFlags = map[MyCode]string{
 	CodeInvalidToken:      "无效的Token",
 	CodeInvalidAuthFormat: "认证格式有误",
 	CodeNotLogin:          "未登录",
+	CodeRequestFileError:  "获取上传文件错误",
+	CodeRedisSaveFiled:    "redis保存失败",
+	CodeFileSeekFailed:    "seek长度和文件大小不一致",
 }
 
 func (c MyCode) Msg() string {

@@ -6,6 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/gin-gonic/gin v1.6.2
+	github.com/go-emix/utils v0.0.0-20210220031538-a093a9b167d9
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/go-sql-driver/mysql v1.4.0
 	github.com/gorilla/websocket v1.4.0

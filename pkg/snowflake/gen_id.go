@@ -29,12 +29,13 @@ func Init(machineId uint16) (err error) {
 }
 
 // GetID 返回生成的id值
-func GetID() (id uint64, err error) {
+func GetID() (id int64, err error) {
 	if sonyFlake == nil {
 		err = fmt.Errorf("snoy flake not inited")
 		return
 	}
 
-	id, err = sonyFlake.NextID()
+	uid, err := sonyFlake.NextID()
+	id= int64(uid)
 	return
 }

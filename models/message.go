@@ -1,7 +1,10 @@
 package models
 
 import (
+	"go.uber.org/zap"
+	"ketangpai/dao/redis"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -16,7 +19,8 @@ const (
 
 type Message struct {
 	Msg      []byte
-	Roomid   string
+	LessonID string
+	UserID   int64
 	Username string
 	Conn     *Connection
 }
@@ -25,8 +29,6 @@ type Connection struct {
 	WsConn *websocket.Conn
 	Send   chan []byte
 }
-
-
 
 func (m Message) Read(channel string) {
 	c := m.Conn
@@ -54,8 +56,14 @@ func (m Message) Read(channel string) {
 			break
 		}
 
+		err = redis.TalkFrequency(strconv.FormatInt(m.UserID, 10), m.Username, m.LessonID)
+		if err != nil {
+			zap.L().Error("redis.TalkFrequency(strconv.FormatInt(m.UserID, 10), m.Username, m.LessonID) failed",zap.Error(err))
+			return 
+		}
+
 		//传入广播通道
-		msg := Message{data, m.Roomid, m.Username, c}
+		msg := Message{data, m.LessonID, m.UserID, m.Username, c}
 		switch channel {
 		case KeyBroadcast:
 			//广播通道
@@ -70,7 +78,7 @@ func (m Message) Read(channel string) {
 			H.Answer <- msg
 			break
 		case KeyChoose:
-			H.Choose<- msg
+			H.Choose <- msg
 		}
 
 	}

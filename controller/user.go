@@ -2,11 +2,14 @@ package controller
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"ketangpai/dao/mysql"
 	"ketangpai/models"
 	"ketangpai/pkg/jwt"
+	"net/http"
+	"strings"
 )
 
 // SignUpHandler 注册
@@ -53,18 +56,18 @@ func LoginHandler(c *gin.Context) {
 
 	// 生成Token
 	//返回一个access登陆token，和一个本地用来刷新的token
-	//aToken, rToken, _ := jwt.GenToken(u.UserID,u.UserName)
-	aToken, _ := jwt.GenToken(int64(u.UserID),u.UserName)
+	aToken, rToken, _ := jwt.GenToken(u.UserID,u.UserName)
+
 	ResponseSuccess(c, gin.H{
 		"accessToken":  aToken,
-		//"refreshToken": rToken,
+		"refreshToken": rToken,
 		"userID":       u.UserID,
 		"username":     u.UserName,
 	})
 }
 
 // RefreshTokenHandler 用本地上传的refreshToken刷新token重新生成携带登陆信息的accesstoken
-/*func RefreshTokenHandler(c *gin.Context) {
+func RefreshTokenHandler(c *gin.Context) {
 	rt := c.Query("refresh_token")
 	authHeader := c.Request.Header.Get("Authorization")
 	if authHeader == "" {
@@ -86,4 +89,3 @@ func LoginHandler(c *gin.Context) {
 		"refresh_token": rToken,
 	})
 }
-*/

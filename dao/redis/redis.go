@@ -35,3 +35,7 @@ func Init(cfg *settings.RedisConfig) (err error) {
 func Close() {
 	_ = client.Close()
 }
+
+func GetClient() *redis.Client {
+	return client
+}

@@ -41,7 +41,7 @@ func Server(c *gin.Context) {
 
 	//获取进入的房间
 	channel:=c.Param("channel")
-	roomid := c.Param("roomid")
+	roomid := c.Param("lessonid")
 	token := c.Param("token")
 	Claims, err := jwt.ParseToken(token)
 	if err != nil {
@@ -51,7 +51,7 @@ func Server(c *gin.Context) {
 
 	//把信息传入新进入聊天室的通道 进行广播
 	con := &models.Connection{Send: make(chan []byte, 256), WsConn: wsConn}
-	msg := models.Message{Roomid: roomid, Username: Claims.UserName, Conn: con}
+	msg := models.Message{LessonID: roomid, Username: Claims.UserName, Conn: con,UserID: Claims.UserId}
 
 
 

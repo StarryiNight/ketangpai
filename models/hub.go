@@ -29,15 +29,15 @@ func (h *Hub) Run() {
 
 		//进入聊天室
 		case m := <-h.Join:
-			conns := h.Rooms[m.Roomid]
+			conns := h.Rooms[m.LessonID]
 			if conns == nil {
 				conns = make(map[*Connection]string)
-				h.Rooms[m.Roomid] = conns
+				h.Rooms[m.LessonID] = conns
 			}
-			h.Rooms[m.Roomid][m.Conn] = m.Username
+			h.Rooms[m.LessonID][m.Conn] = m.Username
 
 			for con := range conns {
-				str := "欢迎" + m.Username + "加入" + m.Roomid + "聊天室"
+				str := "欢迎" + m.Username + "加入" + m.LessonID + "聊天室"
 				msg := []byte(str)
 				select {
 				case con.Send <- msg:
@@ -46,19 +46,19 @@ func (h *Hub) Run() {
 			}
 			//退出聊天室
 		case m := <-h.Quit:
-			conns := h.Rooms[m.Roomid]
+			conns := h.Rooms[m.LessonID]
 			if conns != nil {
 				if _, ok := conns[m.Conn]; ok {
 					delete(conns, m.Conn)
 					close(m.Conn.Send)
 					for con := range conns {
-						str := m.Username + "离开了" + m.Roomid + "聊天室"
+						str := m.Username + "离开了" + m.LessonID + "聊天室"
 						msg := []byte(str)
 						select {
 						case con.Send <- msg:
 						}
 						if len(conns) == 0 {
-							delete(h.Rooms, m.Roomid)
+							delete(h.Rooms, m.LessonID)
 						}
 					}
 				}
@@ -75,7 +75,7 @@ func (h *Hub) Run() {
 				if str == "正确" {
 					h.sendAll(Message{
 						Msg:      []byte("回答正确"),
-						Roomid:   m.Roomid,
+						LessonID: m.LessonID,
 						Username: m.Username,
 						Conn:     m.Conn,
 					})
@@ -115,7 +115,7 @@ func (h *Hub) Run() {
 func (h *Hub) sendAll(m Message) {
 	pre := []byte(m.Username + ":")
 	m.Msg = append(pre, m.Msg...)
-	conns := h.Rooms[m.Roomid]
+	conns := h.Rooms[m.LessonID]
 	for con := range conns {
 		if con == m.Conn {
 			continue
@@ -126,7 +126,7 @@ func (h *Hub) sendAll(m Message) {
 			close(con.Send)
 			delete(conns, con)
 			if len(conns) == 0 {
-				delete(h.Rooms, m.Roomid)
+				delete(h.Rooms, m.LessonID)
 			}
 
 		}
