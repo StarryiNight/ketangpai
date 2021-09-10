@@ -13,7 +13,7 @@ import (
 // CreateLessonHandler   创建课堂
 func CreateLessonHandler(c *gin.Context) {
 	var lesson models.Lesson
-	lesson.TeacherId, _ =getCurrentUserID(c)
+	lesson.TeacherId, _ = GetCurrentUserID(c)
 	var err error
 	lesson.ClassId,err=strconv.ParseInt(c.Param("classid"),10,64)
 	if err != nil {
@@ -68,12 +68,12 @@ func LessonSignInHandler(c *gin.Context) {
 	if err != nil {
 		ResponseErrorWithMsg(c,CodeInvalidParams,CodeInvalidParams.Msg())
 	}
-	lessonInfo.StudentId, _ =getCurrentUserID(c)
+	lessonInfo.StudentId, _ = GetCurrentUserID(c)
 
 	err = logic.LessonSignIn(&lessonInfo)
 	if err != nil {
 		zap.L().Error("logic.LessonSignIn failed", zap.Error(err))
-		ResponseError(c, CodeServerBusy)
+		ResponseErrorWithMsg(c, CodeServerBusy,err.Error())
 		return
 	}
 	ResponseSuccess(c, nil)
@@ -85,7 +85,7 @@ func HomeworkSubmitHandler(c *gin.Context) {
 	if err != nil {
 		ResponseErrorWithMsg(c,CodeInvalidParams,CodeInvalidParams.Msg())
 	}
-	studentid,_:=getCurrentUserID(c)
+	studentid,_:= GetCurrentUserID(c)
 	if err := mysql.HomeworkSubmit(lessonid,studentid); err != nil {
 		zap.L().Error("mysql.HomeworkSubmit(lessonid) failed", zap.Error(err))
 		ResponseError(c, CodeServerBusy)

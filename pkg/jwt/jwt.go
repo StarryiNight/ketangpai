@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"ketangpai/models"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -14,6 +15,7 @@ var mySecret = []byte("课堂派")
 type MyClaims struct {
 	UserId   int64  `json:"userId"`
 	UserName string `json:"username"`
+	Position string `json:"position"`
 	jwt.StandardClaims
 }
 
@@ -21,16 +23,16 @@ func keyFunc(_ *jwt.Token) (i interface{}, err error) {
 	return mySecret, nil
 }
 
-
 // GenToken 生成access token 和 refresh token
-func GenToken(userID int64,userName string) (aToken, rToken string, err error) {
+func GenToken(user models.User) (aToken, rToken string, err error) {
 	// 创建一个我们自己的声明
 	c := MyClaims{
-		userID, // 自定义字段
-		userName,
+		user.UserID, // 自定义字段
+		user.UserName,
+		user.Position,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(), // 过期时间
-			Issuer:    "bluebell",                                 // 签发人
+			Issuer:    "ketangpai",                                 // 签发人
 		},
 	}
 	// 加密并获得完整的编码后的字符串token
@@ -39,7 +41,7 @@ func GenToken(userID int64,userName string) (aToken, rToken string, err error) {
 	// refresh token 不需要存任何自定义数据
 	rToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(time.Second * 30).Unix(), // 过期时间
-		Issuer:    "bluebell",                              // 签发人
+		Issuer:    "ketangpai",                              // 签发人
 	}).SignedString(mySecret)
 	// 使用指定的secret签名并获得完整的编码后的字符串token
 	return
@@ -74,7 +76,11 @@ func RefreshToken(aToken, rToken string) (newAToken, newRToken string, err error
 
 	// 当access token是过期错误 并且 refresh token没有过期时就创建一个新的access token
 	if v.Errors == jwt.ValidationErrorExpired {
-		return GenToken(claims.UserId,claims.UserName)
+		return GenToken(models.User{
+			UserName: claims.UserName,
+			UserID: claims.UserId,
+			Position: claims.Position,
+		})
 	}
 	return
 }

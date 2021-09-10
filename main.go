@@ -30,6 +30,13 @@ func main() {
 		return
 	}
 	defer mysql.Close() // 程序退出关闭数据库连接
+
+	//casbin 初始化
+	if err := mysql.CasbinInit(); err != nil {
+		fmt.Printf("init casbin failed, err:%v\n", err)
+		return
+	}
+
 	if err := redis.Init(settings.Conf.RedisConfig); err != nil {
 		fmt.Printf("init redis failed, err:%v\n", err)
 		return

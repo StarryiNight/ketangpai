@@ -42,7 +42,7 @@ func VoteHandler(c *gin.Context) {
 		return
 	}
 	//获取当前登陆的id
-	userID, err := getCurrentUserID(c)
+	userID, err := GetCurrentUserID(c)
 	if err != nil {
 		ResponseError(c, CodeNotLogin)
 		return

@@ -116,3 +116,18 @@ func LessonCheck(lessonid int64) (lessoninfos []*models.LessonInfo, err error) {
 	}
 	return
 }
+
+func CheckSignIn(lessonInfo *models.LessonInfo) (bool,error) {
+	sqlStr:= `select signin_status from lessoninfo where lesson_id=? and student_id=?`
+	var flag int
+	err:=db.Get(&flag,sqlStr,lessonInfo.LessonId,lessonInfo.StudentId)
+	if err != nil {
+		zap.L().Error("query lessoninfo  signin_status failed", zap.Error(err))
+		return false,err
+	}
+	if flag!= 0 {
+		return true,nil
+	}else {
+		return false,nil
+	}
+}

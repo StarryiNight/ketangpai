@@ -20,7 +20,7 @@ func CreatePostHandler(c *gin.Context) {
 		return
 	}
 	// 获取作者ID
-	userID, err := getCurrentUserID(c)
+	userID, err := GetCurrentUserID(c)
 	if err != nil {
 		zap.L().Error("GetCurrentUserID() failed", zap.Error(err))
 		ResponseError(c, CodeNotLogin)

@@ -42,8 +42,8 @@ func Register(user *models.User) (err error) {
 }
 
 func Login(user *models.User) (err error) {
-	originPassword := user.Password // 记录一下原始密码
-	sqlStr := "select user_id, username, password from user where username = ?"
+	originPassword := user.Password // 记录原始密码
+	sqlStr := "select user_id, username, password ,position from user where username = ?"
 	err = db.Get(user, sqlStr, user.UserName)
 	if err != nil && err != sql.ErrNoRows {
 		// 查询数据库出错

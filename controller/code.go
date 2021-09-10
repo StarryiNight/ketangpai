@@ -16,15 +16,17 @@ const (
 	CodeRequestFileError  MyCode = 1009
 	CodeRedisSaveFiled    MyCode = 1010
 	CodeFileSeekFailed    MyCode = 1011
+	CodeLimitedAuthority  MyCode = 1012
 )
 
 var msgFlags = map[MyCode]string{
-	CodeSuccess:         "success",
-	CodeInvalidParams:   "请求参数错误",
-	CodeUserExist:       "用户名重复",
-	CodeUserNotExist:    "用户不存在",
-	CodeInvalidPassword: "用户名或密码错误",
-	CodeServerBusy:      "服务繁忙",
+	CodeSuccess:          "success",
+	CodeInvalidParams:    "请求参数错误",
+	CodeUserExist:        "用户名重复",
+	CodeUserNotExist:     "用户不存在",
+	CodeInvalidPassword:  "用户名或密码错误",
+	CodeServerBusy:       "服务繁忙",
+	CodeLimitedAuthority: "用户所在组不能对此操作",
 
 	CodeInvalidToken:      "无效的Token",
 	CodeInvalidAuthFormat: "认证格式有误",

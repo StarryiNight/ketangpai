@@ -42,7 +42,7 @@ func ScoreAddHandler(c *gin.Context) {
 
 // StudentAddClassHandler  学生选课
 func StudentAddClassHandler(c *gin.Context) {
-	userid, _ :=getCurrentUserID(c)
+	userid, _ := GetCurrentUserID(c)
 	classid, _ :=strconv.ParseInt(c.Param("classid"),10,64)
 
 	err := mysql.StudentAddClass(classid,userid)

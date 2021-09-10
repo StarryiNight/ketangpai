@@ -56,13 +56,15 @@ func LoginHandler(c *gin.Context) {
 
 	// 生成Token
 	//返回一个access登陆token，和一个本地用来刷新的token
-	aToken, rToken, _ := jwt.GenToken(u.UserID,u.UserName)
+	aToken, rToken, _ := jwt.GenToken(u)
 
 	ResponseSuccess(c, gin.H{
 		"accessToken":  aToken,
 		"refreshToken": rToken,
+		"position":     u.Position,
 		"userID":       u.UserID,
 		"username":     u.UserName,
+
 	})
 }
 
