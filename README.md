@@ -1,5 +1,5 @@
 # 课堂派
-[接口文档](https://docs.apipost.cn/preview/ec44e44e1a31910a/d35ef22c74c0b981)
+[接口文档](https://docs.apipost.cn/preview/46fe3fffb058fda1/e59ec1dcc82e7b81)
 - 账号注册登录注销
 - 创建课堂,布置作业
 - 上传-下载课件资料
