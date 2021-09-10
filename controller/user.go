@@ -7,6 +7,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"ketangpai/dao/mysql"
+	"ketangpai/dao/redis"
+	"ketangpai/logic"
 	"ketangpai/models"
 	"ketangpai/pkg/jwt"
 	"net/http"
@@ -37,6 +39,7 @@ func SignUpHandler(c *gin.Context) {
 	err := mysql.Register(&models.User{
 		UserName: fo.UserName,
 		Password: fo.Password,
+		Email:    fo.Email,
 	})
 	if errors.Is(err, mysql.ErrorUserExit) {
 		ResponseError(c, CodeUserExist)
@@ -103,4 +106,45 @@ func RefreshTokenHandler(c *gin.Context) {
 		"access_token":  aToken,
 		"refresh_token": rToken,
 	})
+}
+
+// RetrievePasswordHandler1 发送找回密码的验证码
+func RetrievePasswordHandler1(c *gin.Context) {
+	username:=c.PostForm("username")
+	err:=logic.RetrievePassword(username)
+	if err != nil {
+		ResponseErrorWithMsg(c,CodeServerBusy,err.Error())
+		return
+	}
+	ResponseSuccess(c,"发送验证码成功")
+}
+
+func RetrievePasswordHandler2(c *gin.Context)  {
+	username:=c.Param("username")
+	var p models.NewPassword
+	if err := c.ShouldBind(&p); err != nil {
+		zap.L().Error("invalid params", zap.Error(err))
+		ResponseErrorWithMsg(c, CodeInvalidParams, err.Error())
+		return
+	}
+	//获取存储在redis的验证码
+	code, err :=redis.GetVerificationCode(username)
+	if err != nil {
+		ResponseErrorWithMsg(c,CodeServerBusy,CodeServerBusy.Msg())
+		return
+	}
+	if code!=p.Code{
+		ResponseErrorWithMsg(c,CodeVerificationCode,CodeVerificationCode.Msg())
+		return
+	}
+	if err := mysql.ChangePassword(username,p.Password); err != nil {
+		zap.L().Error("mysql.ChangePassword(username,p.Password);", zap.Error(err))
+		ResponseErrorWithMsg(c, CodeServerBusy,CodeServerBusy.Msg())
+		return
+	}
+	err = redis.DelVerificationCode(username)
+	if err != nil {
+		return
+	}
+	ResponseSuccess(c,"修改成功")
 }

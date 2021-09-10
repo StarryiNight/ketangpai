@@ -33,3 +33,18 @@ func GetCurrentUserPosition(c *gin.Context) (position string, err error) {
 	}
 	return
 }
+
+// GetCurrentUserName  获取当前登陆的用户名字
+func GetCurrentUserName(c *gin.Context) (username string, err error) {
+	_username, ok := c.Get(ContextUserName)
+	if !ok {
+		err = ErrorUserNotLogin
+		return
+	}
+	username, ok = _username.(string)
+	if !ok {
+		err = ErrorUserNotLogin
+		return
+	}
+	return
+}

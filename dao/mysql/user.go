@@ -36,8 +36,8 @@ func Register(user *models.User) (err error) {
 	// 生成加密密码
 	password := encryptPassword([]byte(user.Password))
 	// 把用户插入数据库
-	sqlStr = "insert into user(user_id, username, password) values (?,?,?)"
-	_, err = db.Exec(sqlStr, userID, user.UserName, password)
+	sqlStr = "insert into user(user_id, username, password,email) values (?,?,?,?)"
+	_, err = db.Exec(sqlStr, userID, user.UserName, password,user.Email)
 	return
 }
 
@@ -66,4 +66,27 @@ func GetUserByID(idStr string) (user *models.User, err error) {
 	sqlStr := `select user_id, username,position from user where user_id = ?`
 	err = db.Get(user, sqlStr, idStr)
 	return
+}
+
+func GetUserByName(user *models.User) (flag bool, err error) {
+	sqlStr := `select user_id, username,position ,email from user where username = ?`
+	err = db.Get(user, sqlStr, user.UserName)
+	if err != nil {
+		return false,err
+	}
+	if user.UserName!="" {
+		return true,nil
+	}else{
+		return false,nil
+	}
+}
+
+func ChangePassword(username string, password string) error {
+	sqlStr := `update user set password=? where username=?`
+	pswd := encryptPassword([]byte(password))
+	_,err := db.Exec(sqlStr,pswd, username )
+	if err != nil {
+		return err
+	}
+	return nil
 }

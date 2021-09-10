@@ -10,7 +10,8 @@ import (
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
-
+	r.POST("password/sendemail",controller.RetrievePasswordHandler1)
+	r.POST("password/retrieve/:username",controller.RetrievePasswordHandler2)
 	//上课讨论、弹幕、抽问、抢答
 	r.GET("/chat/:lessonid/:channel/:token", controller.Server)
 	v1 := r.Group("/api/v1")

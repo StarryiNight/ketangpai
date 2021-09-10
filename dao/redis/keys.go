@@ -12,4 +12,5 @@ const (
 	KeyCommunityPostSetPrefix = "ketangpai:community:"
 	KeyTalkFrequencyZSetPrefix      = "ketangpai:talk:score:"
 	KeyTalkUserHashPrefix ="ketangpai:talk:user:"
+	KeyVerificationCodeHash ="ketangpai:verificationCode"
 )

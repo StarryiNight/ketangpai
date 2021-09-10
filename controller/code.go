@@ -17,6 +17,7 @@ const (
 	CodeRedisSaveFiled    MyCode = 1010
 	CodeFileSeekFailed    MyCode = 1011
 	CodeLimitedAuthority  MyCode = 1012
+	CodeVerificationCode  MyCode = 1013
 )
 
 var msgFlags = map[MyCode]string{
@@ -34,6 +35,7 @@ var msgFlags = map[MyCode]string{
 	CodeRequestFileError:  "获取上传文件错误",
 	CodeRedisSaveFiled:    "redis保存失败",
 	CodeFileSeekFailed:    "seek长度和文件大小不一致",
+	CodeVerificationCode:  "验证码错误",
 }
 
 func (c MyCode) Msg() string {
