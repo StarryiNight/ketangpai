@@ -10,8 +10,8 @@ type User struct {
 
 // RegisterForm 注册api请求param结构
 type RegisterForm struct {
-	UserName        string `json:"username"`
-	Password        string `json:"password"`
-	ConfirmPassword string `json:"repassword"`
+	UserName        string `json:"username" binding:"required"`
+	Password   string `json:"password" binding:"required,eqfield=RePassword"`
+	RePassword string `json:"repassword" binding:"required"`
 }
 

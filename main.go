@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"ketangpai/controller"
 	"ketangpai/dao/mysql"
 	"ketangpai/dao/redis"
 	"ketangpai/logger"
@@ -10,6 +11,7 @@ import (
 	"ketangpai/routers"
 	"ketangpai/settings"
 )
+
 
 func main() {
 	//var confFile string
@@ -34,6 +36,11 @@ func main() {
 	//casbin 初始化
 	if err := mysql.CasbinInit(); err != nil {
 		fmt.Printf("init casbin failed, err:%v\n", err)
+		return
+	}
+
+	if err := controller.InitTrans("zh"); err != nil {
+		fmt.Printf("init trans failed, err:%v\n", err)
 		return
 	}
 

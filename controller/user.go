@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
 	"ketangpai/dao/mysql"
 	"ketangpai/models"
@@ -17,8 +18,20 @@ func SignUpHandler(c *gin.Context) {
 	//序列化 绑定到定义的注册请求参数结构体上
 	var fo models.RegisterForm
 	if err := c.ShouldBindJSON(&fo); err != nil {
-		ResponseErrorWithMsg(c, CodeInvalidParams, err.Error())
+		// 获取validator.ValidationErrors类型的errors
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			// 非validator.ValidationErrors类型错误直接返回
+			ResponseErrorWithMsg(c, CodeInvalidParams, err.Error())
+			return
+		}
+		// validator.ValidationErrors类型错误则进行翻译
+		c.JSON(http.StatusOK, gin.H{
+			"msg": RemoveTopStruct(errs.Translate(trans)),
+		})
 		return
+
+
 	}
 	// 注册用户 插入到数据库中
 	err := mysql.Register(&models.User{
@@ -37,7 +50,7 @@ func SignUpHandler(c *gin.Context) {
 	ResponseSuccess(c, nil)
 }
 
-// LoginHandler 登陆
+
 func LoginHandler(c *gin.Context) {
 	//序列化 绑定到定义的登陆请求参数结构体上
 	var u models.User

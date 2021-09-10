@@ -16,10 +16,6 @@ func LessonSignIn(lessonInfo *models.LessonInfo) (err error) {
 	}
 	//防止重复签到
 	flag,err:=mysql.CheckSignIn(lessonInfo)
-	if err != nil {
-		zap.L().Error("mysql.CheckSignIn(lessonInfo) failed", zap.Int64("lessonId", lessonInfo.LessonId), zap.Error(err))
-		return  err
-	}
 	if flag {
 		return errors.New("不能重复签到")
 	}
