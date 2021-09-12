@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"ketangpai/models"
 )
 
 // GetCurrentUserID 获取当前登陆的用户id
@@ -44,6 +45,18 @@ func GetCurrentUserName(c *gin.Context) (username string, err error) {
 	username, ok = _username.(string)
 	if !ok {
 		err = ErrorUserNotLogin
+		return
+	}
+	return
+}
+
+func GetCurrentUser(c *gin.Context)(user models.User, err error){
+	user.UserID, err =GetCurrentUserID(c)
+	if err != nil {
+		return
+	}
+	user.UserName, err =GetCurrentUserName(c)
+	if err != nil {
 		return
 	}
 	return

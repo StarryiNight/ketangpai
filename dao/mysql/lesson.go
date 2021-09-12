@@ -100,6 +100,8 @@ func HomeworkSubmit(lessonid int64,studentid int64) (err error) {
 	return
 }
 
+
+
 // LessonCheck 根据lessonid查看课堂签到、作业完成情况
 func LessonCheck(lessonid int64) (lessoninfos []*models.LessonInfo, err error) {
 	sqlStr:= `SELECT a.lesson_id,a.student_id,username as student_name,a.submit_status,submit_time,signin_status,signin_time

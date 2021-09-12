@@ -53,7 +53,7 @@ func GetPostListByIDs(ids []string) (postList []*models.Post, err error) {
 	if err != nil {
 		return
 	}
-	// sqlx.In 返回带 `?` bindvar的查询语句, 我们使用Rebind()重新绑定它
+	// sqlx.In 使用Rebind()重新绑定它
 	query = db.Rebind(query)
 	err = db.Select(&postList, query, args...)
 	return

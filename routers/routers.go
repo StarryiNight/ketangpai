@@ -8,7 +8,12 @@ import (
 )
 
 func SetupRouter() *gin.Engine {
-	r := gin.Default()
+
+	//gin日志记录
+	//r := gin.New()
+	//r.Use(logger.GinLogger(),logger.GinRecovery(true))
+
+	r:=gin.Default()
 
 	r.POST("password/sendemail",controller.RetrievePasswordHandler1)
 	r.POST("password/retrieve/:username",controller.RetrievePasswordHandler2)
@@ -60,7 +65,18 @@ func SetupRouter() *gin.Engine {
 			lesson.GET("/rank/:lessonid/:page",controller.LessonTalkRankHandler)
 
 		}
-		
+		test:=v1.Group("/test")
+		{
+			//布置考试
+			test.POST("/set",controller.SetTestHandler)
+			//添加选择题
+			test.POST("/add/choicequestion",controller.AddChoiceQuestionHandler)
+			//添加填空题
+			test.POST("/add/gapfilling",controller.AddGapFillingHandler)
+			test.GET("/score/:testid",controller.GetStudentTestScoreHandler)
+
+		}
+
 		student:=v1.Group("/student")
 		{
 			//学生签到
@@ -69,6 +85,10 @@ func SetupRouter() *gin.Engine {
 			student.POST("/homework/:lessonid",controller.HomeworkSubmitHandler)
 			//学生选课
 			student.POST("/choseclass/:classid",controller.StudentAddClassHandler)
+			//学生查看试卷
+			student.GET("/getpaper/:testid",controller.GetTestHandler)
+			//学生提交试卷获取分数
+			student.GET("/getscore/:testid",controller.GetScoreHandler)
 		}
 		
 

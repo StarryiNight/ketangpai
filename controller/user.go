@@ -33,7 +33,6 @@ func SignUpHandler(c *gin.Context) {
 		})
 		return
 
-
 	}
 	// 注册用户 插入到数据库中
 	err := mysql.Register(&models.User{
@@ -52,7 +51,6 @@ func SignUpHandler(c *gin.Context) {
 	}
 	ResponseSuccess(c, nil)
 }
-
 
 func LoginHandler(c *gin.Context) {
 	//序列化 绑定到定义的登陆请求参数结构体上
@@ -75,12 +73,11 @@ func LoginHandler(c *gin.Context) {
 	aToken, rToken, _ := jwt.GenToken(u)
 
 	ResponseSuccess(c, gin.H{
-		"accessToken":  aToken,
-		"refreshToken": rToken,
-		"position":     u.Position,
-		"userID":       u.UserID,
-		"username":     u.UserName,
-
+		"4.accessToken":  aToken,
+		"5.refreshToken": rToken,
+		"3.position":     u.Position,
+		"1.userID":       u.UserID,
+		"2.username":     u.UserName,
 	})
 }
 
@@ -110,17 +107,17 @@ func RefreshTokenHandler(c *gin.Context) {
 
 // RetrievePasswordHandler1 发送找回密码的验证码
 func RetrievePasswordHandler1(c *gin.Context) {
-	username:=c.PostForm("username")
-	err:=logic.RetrievePassword(username)
+	username := c.PostForm("username")
+	err := logic.RetrievePassword(username)
 	if err != nil {
-		ResponseErrorWithMsg(c,CodeServerBusy,err.Error())
+		ResponseErrorWithMsg(c, CodeServerBusy, err.Error())
 		return
 	}
-	ResponseSuccess(c,"发送验证码成功")
+	ResponseSuccess(c, "发送验证码成功")
 }
 
-func RetrievePasswordHandler2(c *gin.Context)  {
-	username:=c.Param("username")
+func RetrievePasswordHandler2(c *gin.Context) {
+	username := c.Param("username")
 	var p models.NewPassword
 	if err := c.ShouldBind(&p); err != nil {
 		zap.L().Error("invalid params", zap.Error(err))
@@ -128,23 +125,23 @@ func RetrievePasswordHandler2(c *gin.Context)  {
 		return
 	}
 	//获取存储在redis的验证码
-	code, err :=redis.GetVerificationCode(username)
+	code, err := redis.GetVerificationCode(username)
 	if err != nil {
-		ResponseErrorWithMsg(c,CodeServerBusy,CodeServerBusy.Msg())
+		ResponseErrorWithMsg(c, CodeServerBusy, CodeServerBusy.Msg())
 		return
 	}
-	if code!=p.Code{
-		ResponseErrorWithMsg(c,CodeVerificationCode,CodeVerificationCode.Msg())
+	if code != p.Code {
+		ResponseErrorWithMsg(c, CodeVerificationCode, CodeVerificationCode.Msg())
 		return
 	}
-	if err := mysql.ChangePassword(username,p.Password); err != nil {
+	if err := mysql.ChangePassword(username, p.Password); err != nil {
 		zap.L().Error("mysql.ChangePassword(username,p.Password);", zap.Error(err))
-		ResponseErrorWithMsg(c, CodeServerBusy,CodeServerBusy.Msg())
+		ResponseErrorWithMsg(c, CodeServerBusy, CodeServerBusy.Msg())
 		return
 	}
 	err = redis.DelVerificationCode(username)
 	if err != nil {
 		return
 	}
-	ResponseSuccess(c,"修改成功")
+	ResponseSuccess(c, "修改成功")
 }

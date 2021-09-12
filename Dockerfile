@@ -18,8 +18,8 @@ RUN go mod download
 # 将代码复制到容器中
 COPY . .
 
-# 将我们的代码编译成二进制可执行文件 bubble
-RUN go build -o bluebell .
+# 将我们的代码编译成二进制可执行文件
+RUN go build -o ketangpai .
 
 ###################
 # 接下来创建一个小镜像
@@ -32,10 +32,12 @@ COPY ./conf /conf
 # 从builder镜像中把可执行文件拷贝到当前目录
 COPY --from=builder /build/ketangpai /
 
-RUN set -eux \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends netcat \
-    && chmod 755 wait-for.sh
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y \
+		--no-install-recommends \
+		netcat; \
+        chmod 755 wait-for.sh
 
 # 需要运行的命令
-#ENTRYPOINT ["/ketangpai", "conf/config.ini"]
+ENTRYPOINT ["/ketangpai", "conf/config.ini"]

@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 // User 登陆api请求param结构
 type User struct {
 	UserID   int64  `json:"user_id" db:"user_id"`
@@ -21,4 +23,11 @@ type NewPassword struct {
 	Password   string `json:"password" binding:"required,eqfield=RePassword"`
 	RePassword string `json:"repassword" binding:"required"`
 	Code       string `json:"code"`
+}
+
+type StudentScore struct {
+	StudentName string    `json:"student_name" db:"student_name"`
+	StudentID   int64     `json:"student_id" db:"student_id"`
+	Score       float32   `json:"score" db:"score"`
+	SubmitTime  time.Time `json:"submit_time" db:"submit_time"`
 }

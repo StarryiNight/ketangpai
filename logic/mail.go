@@ -18,9 +18,6 @@ const (
 
 func SendMail(username string,address string)error {
 
-
-
-
 	//生成6位随机验证码
 	randPass:= rand.New(rand.NewSource(time.Now().UnixNano())).Intn(1000000)
 
